@@ -1,0 +1,12 @@
+# Params for LLM
+model_string: "clip-ViT-L-14"
+
+# Params for hnswlib model
+hnswlib_model_path: '../database/hnswmodel_m64.bin'
+database_image_index_path: '../database/hnswdatabase_m64.bin'
+space: 'cosine' # l2, cosine or ip
+ef_construction: 200 # ef_construction - controls index search speed/build speed tradeoff
+m: 64 # M - is tightly connected with internal dimensionality of the data. Strongly affects memory consumption (~M), Higher M leads to higher accuracy/run_time at fixed ef/efConstruction
+# Controlling the recall by setting ef:
+ef: 50 # ef should always be > k (number of neighbors)
+dim: 768
