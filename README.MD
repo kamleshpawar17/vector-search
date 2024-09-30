@@ -26,7 +26,7 @@ output = vs.query_database_prompt(image_path, 10)
 
 ```
 Output for the prompt "dolphins jumping out of water"
-![Alt text](./code/sample_output.png)
+![Alt text](sample_output.png)
 
 ### Database
 A database will be created at the location specified in the ```./configs/config.yam ``` 
