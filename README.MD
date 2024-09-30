@@ -29,7 +29,7 @@ Output for the prompt "dolphins jumping out of water"
 ![Alt text](sample_output.png)
 
 ### Database
-A database will be created at the location specified in the ```./configs/config.yam ``` 
+A database will be created at the location specified in the ```./configs/config.yaml ``` 
 
 Update the fields in the yaml file to create new database.
 
