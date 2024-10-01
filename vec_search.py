@@ -61,6 +61,7 @@ class DataBaseVectorSearch:
                 self.vec_searcher.resize_index(database_length+len(fnames))
             # put data for indexing
             self.vec_searcher.add_items(embs, np.arange(database_length, database_length+len(embs)))
+            # save model and database
             logger.info(f"saving hnswlib model to {self.config['hnswlib_model_path']}")
             self.vec_searcher.save_index(self.config['hnswlib_model_path'])
             with open(self.config['database_image_index_path'], "wb") as file:
