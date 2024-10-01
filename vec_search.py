@@ -41,9 +41,9 @@ class DataBaseVectorSearch:
         else:
             fnames_batched = []
             fnames_batched = fnames_batched.append(fnames)
-        embs = []
         logger.info(f"computing embeddings...")
         for fnames in fnames_batched:
+            embs = []
             for fname in tqdm(fnames):
                 emb = self.model.encode(Image.open(fname))
                 embs.append(emb)
