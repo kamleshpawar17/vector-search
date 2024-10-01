@@ -1,6 +1,6 @@
 ### A Simple Vector Search Engine
 
-This is a vector serach engine which computs embeddings using LLMs (CLIP-Vit) and generates a local database using hnsw library.
+This is a vector serach engine which computes embeddings using LLMs (CLIP-Vit) and generates a local database using hnsw library.
 
 The functionality includes:
 1. Indexing images to the database
@@ -33,4 +33,4 @@ A database will be created at the location specified in the ```./configs/config.
 
 Update the fields in the yaml file to create new database.
 
-Once the datbase is created subsequent instantiation of vector serach will append the database specified in the ```./configs/config.yaml```
+Once the datbase is created subsequent instantiation of vector serach will append to the database specified in the ```./configs/config.yaml```

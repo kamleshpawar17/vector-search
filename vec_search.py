@@ -24,35 +24,47 @@ class DataBaseVectorSearch:
             with open(self.config['database_image_index_path'], "rb") as file:
                 self.database_image_index = pickle.load(file)
     
-    def add_images_from_dir(self, dir_path: str, start_indx: int = None, end_indx: int = None) -> None:
+    def split_into_batches(self, fnames: list, batch_size: int) -> list:
+        output = []
+        for k in range(0, len(fnames), batch_size):
+            if k+batch_size < len(fnames):
+                output.append(fnames[k: k+batch_size])
+            else:
+                output.append(fnames[k::])
+        return output
+        
+    def add_images_from_dir(self, dir_path: str, batch_size: int = 5000) -> None:
         # generate embedding for all the images
         fnames = glob.glob(dir_path)
-        if start_indx is not None:
-            assert start_indx<len(fnames) and end_indx < len(fnames), f"start and end index must be between :0 to {len(fnames)}"
-            fnames = fnames[start_indx:end_indx]
+        if (len(fnames)) > batch_size:
+            fnames_batched = self.split_into_batches(fnames, batch_size)
+        else:
+            fnames_batched = []
+            fnames_batched = fnames_batched.append(fnames)
         embs = []
         logger.info(f"computing embeddings...")
-        for fname in tqdm(fnames):
-            emb = self.model.encode(Image.open(fname))
-            embs.append(emb)
-        embs = np.array(embs)
-        assert len(embs) == len(fnames), "Number of embeddings not equal to number of images in directory"
-        self.database_image_index += fnames
-        
-        # add embedding to the database
-        logger.info("updating hnswlib model....")
-        if not Path(self.config['hnswlib_model_path']).exists():
-            database_length = 0
-            self.vec_searcher.init_index(max_elements=len(fnames), ef_construction=self.config['ef_construction'], M=self.config['m'])
-        else:
-            database_length = self.vec_searcher.get_current_count()
-            self.vec_searcher.resize_index(database_length+len(fnames))
-        # put data for indexing
-        self.vec_searcher.add_items(embs, np.arange(database_length, database_length+len(embs)))
-        logger.info(f"saving hnswlib model to {self.config['hnswlib_model_path']}")
-        self.vec_searcher.save_index(self.config['hnswlib_model_path'])
-        with open(self.config['database_image_index_path'], "wb") as file:
-            pickle.dump(self.database_image_index, file)
+        for fnames in fnames_batched:
+            for fname in tqdm(fnames):
+                emb = self.model.encode(Image.open(fname))
+                embs.append(emb)
+            embs = np.array(embs)
+            assert len(embs) == len(fnames), "Number of embeddings not equal to number of images in directory"
+            self.database_image_index += fnames
+            
+            # add embedding to the database
+            logger.info("updating hnswlib model....")
+            if not Path(self.config['hnswlib_model_path']).exists():
+                database_length = 0
+                self.vec_searcher.init_index(max_elements=len(fnames), ef_construction=self.config['ef_construction'], M=self.config['m'])
+            else:
+                database_length = self.vec_searcher.get_current_count()
+                self.vec_searcher.resize_index(database_length+len(fnames))
+            # put data for indexing
+            self.vec_searcher.add_items(embs, np.arange(database_length, database_length+len(embs)))
+            logger.info(f"saving hnswlib model to {self.config['hnswlib_model_path']}")
+            self.vec_searcher.save_index(self.config['hnswlib_model_path'])
+            with open(self.config['database_image_index_path'], "wb") as file:
+                pickle.dump(self.database_image_index, file)
     
     def query_database_prompt(self, prompt: str, number_of_images: int = 10, show_images: bool = True) -> list:
         # knn search using hnswlib model
