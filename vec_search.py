@@ -89,13 +89,13 @@ class DataBaseVectorSearch:
             self.show_images(neighbors, scores, image_path)
         return [self.database_image_index[k] for k in neighbors]
     
-    def show_images(self, image_indices, scores, query_image_path: str = None):
+    def show_images(self, image_indices: list, scores: list, query_image_path: str = None):
         """function to display the input and matched images
 
         Args:
-            ref_image (str): path to the input image for searching
-            similar_faces_names (List[str]): names of the similar/matched face images
-            base_path (str): base path to the image directory
+            image_indices (list): list of matched/searched image index
+            scores (List[str]): score for the matched images
+            query_image_path (str): query image path
         """
         number_of_images = len(image_indices)
         cols = 5
