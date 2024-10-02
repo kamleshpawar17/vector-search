@@ -35,12 +35,12 @@ class DataBaseVectorSearch:
         
     def add_images_from_dir(self, dir_path: str, batch_size: int = 5000) -> None:
         # generate embedding for all the images
-        fnames = glob.glob(dir_path)
-        if (len(fnames)) > batch_size:
-            fnames_batched = self.split_into_batches(fnames, batch_size)
+        fnames_unbatched = glob.glob(dir_path)
+        logger.info(f"Total number of image to be indexed: {len(fnames_unbatched)}")
+        if (len(fnames_unbatched)) > batch_size:
+            fnames_batched = self.split_into_batches(fnames_unbatched, batch_size)
         else:
-            fnames_batched = []
-            fnames_batched = fnames_batched.append(fnames)
+            fnames_batched = [fnames_unbatched]
         logger.info(f"computing embeddings...")
         for fnames in fnames_batched:
             embs = []
